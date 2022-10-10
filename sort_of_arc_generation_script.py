@@ -65,9 +65,7 @@ def collect_sortOfARC_16shapes():
 
 
 
-from genDSL_helpers import visualize_board
-
-
+from genDSL_helpers import plot_riddle
 
 sort_of_arc_shapes = collect_sortOfARC_16shapes()
 #print(sort_of_arc_shapes.shape)
@@ -77,16 +75,15 @@ COLORS = 9
 INP_rule_dim = SHAPES+COLORS
 OUT_rule_dim = SHAPES+COLORS+4
 
-
-
-def generate_random_SortOfARC_boardPair(in_rule,out_rule):
+def generate_random_SortOfARC_boardPair(in_rule,out_rule, grid_height=20, grid_width=20):
     assert 0<=in_rule  and  in_rule<16+9
     assert 0<=out_rule and out_rule<16+9+4
 
     
 
     #original workshop paper only does 20x20
-    h=20;w=20;
+    h=grid_height
+    w=grid_width
     board = np.zeros( (h,w), dtype=int)
 
     #original workshop paper always has exactly 3 objects
@@ -218,10 +215,26 @@ if False:
     plt.show()
 np.random.seed()
 
-def generate_random_SortOfARC_puzzle(rule_matrix_style='sparse_rule', verbose=True):
+'''
+all_items_same_grid_size = True  # only applies if grid_size is -1
+grid_size_width = -1
+grid_size_height = -1
+min_grid_size = 8 # applies if grid_size is -1
+'''
 
-    meta_trn_size = 5
-    meta_tst_size = 1
+def gen_height_and_width(grid_height, grid_width, min_grid_size):
+    if grid_height == -1:
+        grid_height = np.random.randint(min_grid_size, 31)
+    if grid_width == -1:
+        grid_width = np.random.randint(min_grid_size, 31)
+    return grid_height, grid_width
+
+def generate_random_SortOfARC_puzzle(rule_matrix_style='sparse_rule', meta_trn_size = 5, meta_tst_size = 1, grid_width=20, grid_height=20, min_grid_size=8, all_items_same_grid_size=True, verbose=True):
+
+    meta_trn_size = np.random.randint(2,8) if meta_trn_size==0 else meta_trn_size
+    meta_tst_size = np.random.randint(2,8) if meta_tst_size==0 else meta_tst_size
+
+    current_grid_height, current_grid_width = gen_height_and_width(grid_height, grid_width, min_grid_size)
 
     INP_rule_dim = SHAPES+COLORS
     OUT_rule_dim = SHAPES+COLORS+4
@@ -253,28 +266,24 @@ def generate_random_SortOfARC_puzzle(rule_matrix_style='sparse_rule', verbose=Tr
 
 
 
-    meta_trn_boards = np.zeros((meta_trn_size,2,20,20))
-    meta_tst_boards = np.zeros((meta_tst_size,2,20,20))
-    for t in range(meta_trn_size):
-        inp,out = generate_random_SortOfARC_boardPair(inp_rule,out_rule)
-        meta_trn_boards[t,0] = inp
-        meta_trn_boards[t,1] = out
-    for t in range(meta_tst_size):
-        inp,out = generate_random_SortOfARC_boardPair(inp_rule,out_rule)
-        meta_tst_boards[t,0] = inp
-        meta_tst_boards[t,1] = out
+    input_grids = []
+    output_grids = []
+    #np.zeros((1, 2, current_grid_height, current_grid_width))
+    for t in range(meta_trn_size+meta_tst_size):
+        if not all_items_same_grid_size and t>0:
+            current_grid_height, current_grid_width = gen_height_and_width(grid_height, grid_width, min_grid_size)
+        inp,out = generate_random_SortOfARC_boardPair(inp_rule,out_rule, current_grid_height, current_grid_width)
+        input_grids.append(inp)
+        output_grids.append(out)
+
+    train_input_boards = input_grids[:meta_trn_size]
+    train_output_boards = output_grids[:meta_trn_size]
+    test_input_boards = input_grids[meta_trn_size:]
+    test_output_boards = output_grids[meta_trn_size:]
 
     if verbose:
-        giant_display_board = -1*np.ones( (21*2+1,21*6+2) )
-        for t in range(meta_trn_size):
-            giant_display_board[1:1+20,  1+21*t:1+21*t+20] = meta_trn_boards[t,0]
-            giant_display_board[22:22+20,1+21*t:1+21*t+20] = meta_trn_boards[t,1]
-        for t in range(meta_tst_size):
-            giant_display_board[1:1+20,  1+21*meta_trn_size+1:1+21*meta_trn_size+1+20] = meta_trn_boards[t,0]
-            giant_display_board[22:22+20,1+21*meta_trn_size+1:1+21*meta_trn_size+1+20] = meta_trn_boards[t,1]
-        visualize_board(giant_display_board,  gridlines=False)
-    return meta_trn_boards,meta_tst_boards
-
+        plot_riddle(train_input_boards, train_output_boards, test_input_boards, test_output_boards)
+    return train_input_boards, train_output_boards, test_input_boards, test_output_boards
 
 #make sure not to put objects on top of one another
 #lest the problem become less well defined

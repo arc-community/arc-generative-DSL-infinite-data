@@ -223,10 +223,12 @@ min_grid_size = 8 # applies if grid_size is -1
 '''
 
 def gen_height_and_width(grid_height, grid_width, min_grid_size):
-    if grid_height == -1:
-        grid_height = np.random.randint(min_grid_size, 31)
-    if grid_width == -1:
-        grid_width = np.random.randint(min_grid_size, 31)
+    # grid size needs to be at least 12x12
+    while grid_height < 12 or grid_width < 12:
+        if grid_height == -1:
+            grid_height = np.random.randint(min_grid_size, 31)
+        if grid_width == -1:
+            grid_width = np.random.randint(min_grid_size, 31)
     return grid_height, grid_width
 
 def generate_random_SortOfARC_puzzle(rule_matrix_style='sparse_rule', meta_trn_size = 5, meta_tst_size = 1, grid_width=20, grid_height=20, min_grid_size=8, all_items_same_grid_size=True, verbose=True):

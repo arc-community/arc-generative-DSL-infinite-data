@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap, Normalize
 from matplotlib import colors
+import json
 # build a color map of these colors "#000000", "#0074D9", "#FF4136", "#2ECC40","#FFDC00","#AAAAAA","#F012BE","#FF851B","#7FDBFF","#870C25",
 cmap_list = ['#000000', '#0074D9', '#FF4136', '#2ECC40', '#FFDC00', '#AAAAAA', '#F012BE', '#FF851B', '#7FDBFF', '#870C25']
 # convert the hex strings to values compatible with matplotlib
@@ -22,12 +23,6 @@ def visualize_board(board, gridlines=False):
         plt.vlines(x=xx,ymin=-0.5,ymax=board.shape[0]-0.5, color='gray')
     plt.clim(0,10);  plt.colorbar(); plt.show()
     
-    
-    
-
-
-
-
     
     # fig_y = np.maximum(5, board.shape[0]/6)
     # fig_x = np.maximum(7, board.shape[1]/6+1)
@@ -109,14 +104,18 @@ def plot_task(train_input_grids, train_output_grids, test_input_grids, test_outp
     """
     num_train = len(train_input_grids)
     fig, axs = plt.subplots(2, num_train, figsize=(3 * num_train, 3 * 2))
-    for i in range(num_train):
-        plot_one(axs[0, i], "train", "input", train_input_grids[i])
-        plot_one(axs[1, i], "train", "output", train_output_grids[i])
+    if num_train == 1:
+        plot_one(axs[0], "train", "input", train_input_grids[0])
+        plot_one(axs[1], "train", "output", train_output_grids[0])
+    else:
+        for i in range(num_train):
+            plot_one(axs[0, i], "train", "input", train_input_grids[i])
+            plot_one(axs[1, i], "train", "output", train_output_grids[i])
     plt.tight_layout()
     plt.show(block=False)
 
     num_test = len(test_input_grids)
-    fig, axs = plt.subplots(num_test, 2, figsize=(3 * 2, 3 * num_test))
+    fig, axs = plt.subplots(2, num_test, figsize=(3 * 2, 3 * num_test))
     if num_test == 1:
         plot_one(axs[0], "test", "input", test_input_grids[0])
         plot_one(axs[1], "test", "output", test_output_grids[0])
@@ -126,6 +125,7 @@ def plot_task(train_input_grids, train_output_grids, test_input_grids, test_outp
             plot_one(axs[1, i], "test", "output", test_output_grids[i])
     plt.tight_layout()
     plt.show(block=False)
+
 
 def plot_board(board, gridlines=True):
     ax = None
@@ -140,3 +140,46 @@ def plot_board(board, gridlines=True):
         ax.set_xticklabels([])
         ax.set_yticklabels([])        
     #ax.axis('off')
+
+
+def get_arc_arrays(json_str):
+    """
+    Get the input and output arrays from an ARC JSON string
+    """
+    json_obj = json.loads(json_str)
+
+    train_inputs = []
+    train_outputs = []
+    test_inputs = []
+    test_outputs = []
+
+    for example in json_obj['train']:
+        train_inputs.append(example['input'])
+        train_outputs.append(example['output'])
+
+    for example in json_obj['test']:
+        test_inputs.append(example['input'])
+        if 'output' in example:
+            test_outputs.append(example['output'])
+
+    # convert all floats to ints within the arrays
+    try:
+        train_inputs = [[[int(y) for y in x] for x in z] for z in train_inputs]
+        train_outputs = [[[int(y) for y in x] for x in z] for z in train_outputs]
+        test_inputs = [[[int(y) for y in x] for x in z] for z in test_inputs]
+        test_outputs = [[[int(y) for y in x] for x in z] for z in test_outputs]
+    except:
+        pass
+    #if len(test_outputs) > 1:
+    #    print('test_outputs has more than 1 element')
+    return train_inputs, train_outputs, test_inputs, test_outputs
+
+def plot_arc_file(filename):
+    with open(filename, 'r') as f:
+        json_str = f.read()
+    train_inputs, train_outputs, test_inputs, test_outputs = get_arc_arrays(json_str)
+    plot_task(train_inputs, train_outputs, test_inputs, test_outputs)
+
+def plot_arc_json(json_str):
+    train_inputs, train_outputs, test_inputs, test_outputs = get_arc_arrays(json_str)
+    plot_task(train_inputs, train_outputs, test_inputs, test_outputs)

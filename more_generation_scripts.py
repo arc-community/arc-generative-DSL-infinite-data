@@ -36,8 +36,9 @@ def generate_27a28665():
     in_color = possible_in_colors[in_color_ind]
     inp_board = shapes[out_color_ind]*in_color
 
-    visualize_board(inp_board)
-    visualize_board(out_board)
+    # visualize_board(inp_board)
+    # visualize_board(out_board)
+    return inp_board, out_board
 
 #generate_27a28665()
 
@@ -61,7 +62,8 @@ def generate_007bbfb7():
     inp_board*=color
     out_board*=color
     
-    visualize_board(inp_board)
-    visualize_board(out_board)
+    # visualize_board(inp_board)
+    # visualize_board(out_board)
+    return inp_board, out_board
 
 #generate_007bbfb7()

@@ -56,7 +56,9 @@ def generate_007bbfb7():
 
 
     color_ind = int(np.random.rand()*4)
-    possible_colors = [2,4,6,7]
+    # changed to full color range - parapraxis
+    possible_colors = [1,2,3,4,5,6,7,8,9]
+    #possible_colors = [2,4,6,7]
     color = possible_colors[color_ind]
 
     inp_board*=color

@@ -115,7 +115,7 @@ super_verbose = False
 #-https://en.wikipedia.org/wiki/Binary_space_partitioning
 #-https://graphics.tudelft.nl/Publications-new/2016/SLTLB16/chapter03.Online.pdf
 #~~~~~~~~~~~~~~~~~
-def generate_09c534e7(): #purple dungeon with several connected components
+def generate_09c534e7(room_border_color=4): #purple dungeon with several connected components
     components = np.random.randint(2)+2 #2 to 3
     C=components
     #C=1
@@ -373,7 +373,11 @@ def helper_check_room(board,y1,x1,y2,x2):
 
 
 
-
+def generate_full_riddle_09c534e7():
+    inp_board,out_board = generate_09c534e7()
+    plt.imshow(inp_board,cmap=plt_cmap2);plt.clim(-1.5,10.5);plt.colorbar();plt.show();
+    plt.imshow(out_board,cmap=plt_cmap2);plt.clim(-1.5,10.5);plt.colorbar();plt.show();
+    return inp_board,out_board
 
 
 

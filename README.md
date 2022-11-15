@@ -2,7 +2,7 @@
 Slowly building a collection of infinite riddle generators for benchmarking data-hungry methods. The riddles have been modified somewhat from the original in order to allow for randomization across features (such as range of colors, number of training boards, board sizes).  
 
 ## Notebooks
-** gen_generic_dataset.ipynb ** Generates 3 riddles at present (09c534e7, 007bbfb7, 27a28665).  
+* gen_generic_dataset.ipynb - Generates 3 riddles at present (09c534e7, 007bbfb7, 27a28665).  
 
 09c534e7
 
@@ -16,7 +16,7 @@ Slowly building a collection of infinite riddle generators for benchmarking data
 
 ![image](https://user-images.githubusercontent.com/1429822/201801674-c591fdfc-8167-4af5-b0d8-9307f5a856de.png)
 
-** gen_shape_scaling_and_rotation_riddles.ipynb ** This notebook generates a variety of 18 different riddles that operate over several priors: shapes, scaling, coloring, cardinality and rotation, representation, repetition, in-filling.  Most riddles have a line in one of the corners.  The line may indicate things such as scale, padding, colors. A couple of examples are shown below.  Several of the riddles are fully described in the notebook, but some are not fully described (what they do can be deduced from the function name).
+* gen_shape_scaling_and_rotation_riddles.ipynb - This notebook generates a variety of 18 different riddles that operate over several priors: shapes, scaling, coloring, cardinality and rotation, representation, repetition, in-filling.  Most riddles have a line in one of the corners.  The line may indicate things such as scale, padding, colors. A couple of examples are shown below.  Several of the riddles are fully described in the notebook, but some are not fully described (what they do can be deduced from the function name).
 
 ![image](https://user-images.githubusercontent.com/1429822/201803072-2eea12b6-d0f4-431d-981c-e25207d28c6d.png)
 
@@ -24,7 +24,7 @@ Slowly building a collection of infinite riddle generators for benchmarking data
 
 ![image](https://user-images.githubusercontent.com/1429822/201803516-4eed8c09-2612-4dcb-8746-b05add8dbbac.png)
 
-** gen_pixel_removal_color_change_and_combined_dataset.ipynb **  This notebook generates 3 simple riddles that can be used in studying model performance.  One is a Pixel Removal.  The input boards have randomly colored pixels.  In one of the corners is a colored pixel.  The output board requires removing pixels of that color.  The second is Color Change.  The setup is the same as Pixel Removal.  In this case, two adjacent colors appear in one of the corners.  The one in the corner is the color to change.  The adjacent pixel is the color to change to.  The third is a Combined riddle.  This riddle combines both the Pixel Removal and Color Change riddles.  This generator was used in training transformers to show that the model learned the separate tasks (Pixel Removal and Color Change) from training on a dataset composed only of the Combined riddle.  It also learned the Combined riddle to some extent.  When training on the simple tasks, it did not generalize to the combined task (from training on a set of Pixel Removal and Color Change riddles).  The best model performance was achieved with a mix of all 3 riddles (performed better on all the riddle types). -- study by parapraxis
+* gen_pixel_removal_color_change_and_combined_dataset.ipynb - This notebook generates 3 simple riddles that can be used in studying model performance.  One is a Pixel Removal.  The input boards have randomly colored pixels.  In one of the corners is a colored pixel.  The output board requires removing pixels of that color.  The second is Color Change.  The setup is the same as Pixel Removal.  In this case, two adjacent colors appear in one of the corners.  The one in the corner is the color to change.  The adjacent pixel is the color to change to.  The third is a Combined riddle.  This riddle combines both the Pixel Removal and Color Change riddles.  This generator was used in training transformers to show that the model learned the separate tasks (Pixel Removal and Color Change) from training on a dataset composed only of the Combined riddle.  It also learned the Combined riddle to some extent.  When training on the simple tasks, it did not generalize to the combined task (from training on a set of Pixel Removal and Color Change riddles).  The best model performance was achieved with a mix of all 3 riddles (performed better on all the riddle types). -- study by parapraxis
 
 Example of Pixel Removal:
 
